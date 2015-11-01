@@ -2,10 +2,16 @@
 
 namespace BookshelfProjectBundle\Controller;
 
+use Coderslab\BookshelfProjectBundle\Entity\Book;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+
+/**
+ * @Route("/author")
+ */
 
 class AuthorController extends Controller
 {
@@ -42,11 +48,18 @@ class AuthorController extends Controller
      * @Route("/showBest")
      * @Template()
      */
-    public function showBestAction()
+    public function showBestAction($raiting)
     {
+        $em = $this->getDoctrine()->getManager();
+        $query = $em->createQuery("
+        SELECT b FROM BookshelfBundleProject:Book b
+        WHERE b.raiting > :raiting
+        ")->setParameter("raiting", $raiting);
+        $books = $query->getResult();
         return array(
-                // ...
-            );    }
+            "books" => $books
+        );
+    }
 
     /**
      * @Route("/create")
@@ -83,6 +96,27 @@ class AuthorController extends Controller
             "form" => $form->createView(),
             "authorId" => $authorId
         );
+
+
+    }
+    /**
+     * @Route("/add")
+     * @Template()
+     */
+    public function addAction()
+    {
+        $book = new Book();
+        $form = $this->createFormBuilder($book)
+            ->add("name", "text")
+            ->add("pagesNo", "integer")
+            ->add("raiting", "integer")
+            ->add("author", "entity", array("class" => "BookshelfBundle:Author", "choice_label" => "name"))
+            ->add("create", "submit", array("label" => "Add new book"))
+            ->getForm();
+        return array(
+            "form" => $form->createView()
+        );
+
 
 
     }

@@ -2,6 +2,7 @@
 
 namespace BookshelfProjectBundle\Controller;
 
+use BookshelfProjectBundle\Entity\Author;
 use Coderslab\BookshelfProjectBundle\Entity\Book;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -75,9 +76,13 @@ class AuthorController extends Controller
             ->add("save", "submit", array("label" => "Add new Author"))
             ->getForm();
 
-        return array(
-            "form" => $form->createView()
-        );    }
+        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($author);
+        $em->flush();
+
+        return $this->redirectToRoute("bookshelfproject_author_show", array("authorId" => $author->getId()));
+    }
     /**
      * @Route("/edit/{authorId}")
      * @Template()
@@ -103,15 +108,14 @@ class AuthorController extends Controller
      * @Route("/add")
      * @Template()
      */
-    public function addAction()
+    public function addAction(Request $request)
     {
-        $book = new Book();
-        $form = $this->createFormBuilder($book)
+        $author = new Author();
+        $form = $this->createFormBuilder($author)
             ->add("name", "text")
-            ->add("pagesNo", "integer")
-            ->add("raiting", "integer")
-            ->add("author", "entity", array("class" => "BookshelfBundle:Author", "choice_label" => "name"))
-            ->add("create", "submit", array("label" => "Add new book"))
+            ->add("age", "integer")
+            ->add("description", "text")
+            ->add("create", "submit", array("label" => "Add new Author"))
             ->getForm();
         return array(
             "form" => $form->createView()

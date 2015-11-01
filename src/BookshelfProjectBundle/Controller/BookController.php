@@ -20,41 +20,64 @@ class BookController extends Controller
      * @Route("/show")
      * @Template()
      */
-    public function showAction()
+    public function showAction($bookId)
     {
+        $repo = $this->getDoctrine()->getRepository("BookshelfProjectBundle:Book");
+        $book = $repo->find($bookId);
+
+
         return array(
-                // ...
+                "book" => $bookId
             );    }
 
     /**
      * @Route("/create")
      * @Template()
      */
-    public function createAction()
+    public function createAction(Request $request)
     {
-        return array(
-                // ...
-            );    }
+      $myBook = new Book();
+        $form = $this->createFormBuilder($myBook)
+                     ->add("name", "text")
+                     ->add("pagesNo", "integer")
+                     ->add("raiting", "integer")
+                     ->add("author", "entity" , array("class" => "BookshelfProjectBundle:Author", "choice_label" => "name"))
+                     ->add("create", "submit", array("label" => "Add new book"))
+                     ->getForm();
+        $form->handleRequest($request);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($myBook);
+        $em->flush();
+
+        return $this->redirectToRoute("bookshelfproject_book_show", array("bookId" => $myBook->getId()));
+    }
 
     /**
      * @Route("/delete")
      * @Template()
      */
-    public function deleteAction()
+    public function deleteAction($bookId)
     {
-        return array(
-                // ...
-            );    }
-
+        $em = $this->getDoctrine()->getManager();
+        // Load book to delete
+        $bookToDelete = $this->getDoctrine()->getRepository("BookshelfProjectBundle:Book")->find($bookId);
+        $em->remove($bookToDelete);
+        $em->flush();
+        return $this->redirectToRoute("coderslab_bookshelf_book_showall");
+    }
     /**
      * @Route("/showAll")
      * @Template()
      */
     public function showAllAction()
     {
+        $repo = $this->getDoctrine()->getRepository("BookshelfProjectBundle:Book");
+        $books = $repo->findAll();
         return array(
-                // ...
-            );    }
+            "books" => $books
+        );
+    }
     /**
      * @Route("/add")
      * @Template()

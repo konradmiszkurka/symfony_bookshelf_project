@@ -21,7 +21,7 @@ class reviewController extends Controller
      */
     public function showAction($reviewId)
     {
-       $repo = $this->getDoctrine()->getRepository("BookshelfProject:Review");
+       $repo = $this->getDoctrine()->getRepository("BookshelfProjectBundle:Review");
         $review = $repo->find($reviewId);
 
         return array(

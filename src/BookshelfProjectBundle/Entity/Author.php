@@ -2,6 +2,7 @@
 
 namespace BookshelfProjectBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,11 +23,14 @@ class Author
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Book")
+     * @ORM\OneToMany(targetEntity="Book")
      * @JoinColumn(name="book_id", referencedColumnName="id")
      */
     private $books;
 
+    public function __construct(){
+        $this->books = new ArrayCollection();
+    }
 
     /**
      * @var string

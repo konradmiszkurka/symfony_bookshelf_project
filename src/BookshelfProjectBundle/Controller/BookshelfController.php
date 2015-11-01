@@ -48,7 +48,7 @@ class BookshelfController extends Controller
      * @Route("/Add")
      * @Template()
      */
-    public function AddAction()
+    public function AddAction(Request $request)
     {
         $bookshelf = new Bookshelf();
         $form = $this->createFormBuilder($bookshelf)
@@ -58,7 +58,15 @@ class BookshelfController extends Controller
 
         return array(
                 "form" => $form->createView()
-            );    }
+            );
+        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($bookshelf);
+        $em->flush();
+
+        return $this->redirectToRoute("bookshelfproject_bookshelf_show", array("bookshelfId" => $bookshelf->getId()));
+    }
+
 
     /**
      * @Route("/Delete")

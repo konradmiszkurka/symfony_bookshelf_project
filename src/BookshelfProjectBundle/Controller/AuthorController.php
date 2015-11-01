@@ -42,7 +42,7 @@ class AuthorController extends Controller
         $authorToDelete = $this->getDoctrine()->getRepository("BookshelfProjectBundle:Author")->find($authorId);
         $em->remove($authorToDelete);
         $em->flush();
-        return $this->redirectToRoute("coderslab_bookshelf_author_showall");
+        return $this->redirectToRoute("bookshelfproject_author_showall");
     }
 
     /**
@@ -120,9 +120,14 @@ class AuthorController extends Controller
         return array(
             "form" => $form->createView()
         );
-
-
-
+    }
+    public function showAllAction()
+    {
+        $repo = $this->getDoctrine()->getRepository("BookshelfProjectBundle:Author");
+        $author = $repo->findAll();
+        return array(
+            "authors" => $author
+        );
     }
 
 }

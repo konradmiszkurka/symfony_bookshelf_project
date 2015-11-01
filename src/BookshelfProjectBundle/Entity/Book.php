@@ -44,6 +44,14 @@ class Book
     private $name;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="pagesNo", type="integer")
+     */
+    private $pagesNo;
+
+
+    /**
      * @var string
      *
      * @ORM\Column(name="raiting", type="decimal")
